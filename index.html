@@ -5,20 +5,20 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>2nd Grade Word Cloud Maker</title>
 <style>
-body{font-family:'Comic Sans MS','Chalkboard SE',sans-serif;background:#f0f8ff;margin:0;padding:12px;display:flex;justify-content:center;user-select:none}
-.box{max-width:760px;width:100%;background:#fff;padding:18px;border-radius:24px;box-shadow:0 8px 20px rgba(0,0,0,.1);text-align:center}
+body{font-family:'Comic Sans MS','Chalkboard SE',sans-serif;background:#e5e7eb;margin:0;padding:12px;display:flex;justify-content:center;user-select:none}
+.box{max-width:780px;width:100%;background:#f3f4f6;padding:18px;border-radius:24px;box-shadow:0 8px 20px rgba(0,0,0,.1);text-align:center}
 h1{color:#8854d0;margin:0 0 4px;font-size:1.9rem}
-p{color:#57606f;margin:0 0 10px;font-size:1.05rem}
-textarea{width:100%;height:100px;padding:12px;border:4px solid #a55eea;border-radius:16px;font-size:1.3rem;font-family:inherit;box-sizing:border-box;margin-bottom:10px}
-.ctrls{display:flex;flex-wrap:wrap;justify-content:space-around;background:#f1f2f6;padding:10px;border-radius:16px;margin-bottom:12px;gap:10px}
+p{color:#4b5563;margin:0 0 10px;font-size:1.05rem}
+textarea{width:100%;height:95px;padding:12px;border:4px solid #a55eea;border-radius:16px;font-size:1.3rem;font-family:inherit;box-sizing:border-box;margin-bottom:10px;background:#f9fafb}
+.ctrls{display:flex;flex-wrap:wrap;justify-content:space-around;background:#e5e7eb;padding:10px;border-radius:16px;margin-bottom:12px;gap:10px}
 .lbl{font-weight:bold;display:block;margin-bottom:5px;color:#2f3542;font-size:.9rem}
 .cb{width:34px;height:34px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.2);cursor:pointer}
 .cb.on{border-color:#2f3542;transform:scale(1.15)}
-.sb,.db{background:#fff;border:2px solid #ced6e0;padding:6px 11px;font-size:.9rem;font-weight:bold;font-family:inherit;border-radius:12px;cursor:pointer}
-.sb.on,.db.on{background:#8854d0;color:#fff;border-color:#8854d0}
+.sb,.db,.rb{background:#f9fafb;border:2px solid #cbd5e1;padding:6px 11px;font-size:.9rem;font-weight:bold;font-family:inherit;border-radius:12px;cursor:pointer}
+.sb.on,.db.on,.rb.on{background:#8854d0;color:#fff;border-color:#8854d0}
 .go{background:#ffa502;color:#fff;border:none;padding:12px 24px;font-size:1.45rem;font-weight:bold;font-family:inherit;border-radius:50px;cursor:pointer;box-shadow:0 5px #eccc68;width:100%;max-width:300px;margin-bottom:14px}
 .go:active,.sv:active{transform:translateY(3px)}
-#cloud{width:100%;height:440px;border:4px dashed #8854d0;border-radius:16px;background:#fafafa;position:relative;overflow:hidden;display:none}
+#cloud{width:100%;height:440px;border:4px dashed #8854d0;border-radius:16px;background:#eceef1;position:relative;overflow:hidden;display:none}
 #bg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1}
 .w{position:absolute;font-weight:bold;white-space:nowrap;line-height:1;z-index:2}
 .sv{background:#2ed573;color:#fff;border:none;padding:12px 24px;font-size:1.3rem;font-weight:bold;font-family:inherit;border-radius:50px;cursor:pointer;box-shadow:0 5px #20bf6b;width:100%;max-width:260px;margin-top:14px;display:none}
@@ -45,27 +45,34 @@ textarea{width:100%;height:100px;padding:12px;border:4px solid #a55eea;border-ra
       <button type="button" class="db" data-d="vert">⬇️ Down</button>
       <button type="button" class="db" data-d="mixed">🔀 Both</button>
     </div>
+    <div><span class="lbl">🔁 Repeats</span>
+      <button type="button" class="rb on" data-r="1">1x</button>
+      <button type="button" class="rb" data-r="2">2x</button>
+      <button type="button" class="rb" data-r="3">3x</button>
+    </div>
   </div>
   <button type="button" class="go" id="go">Make My Cloud! 🎉</button>
   <div id="cloud"></div>
   <button type="button" class="sv" id="sv">💾 Save Picture</button>
 </div>
 <script>
-const pals={pg:"#8854d0,#718093,#9c88ff,#2f3640,#6f11d1,#a55eea,#57606f".split(","),br:"#ff4757,#2ed573,#1e90ff,#ffa502,#34495e,#ff6b81,#20bf6b".split(","),pa:"#ff9ff3,#feca57,#ff6b81,#48dbfb,#a29bfe,#20bf6b".split(",")};
+const pals={pg:"#8854d0,#718093,#9c88ff,#2f3640,#6f11d1,#a55eea,#4b5563".split(","),br:"#ff4757,#2ed573,#1e90ff,#ffa502,#34495e,#ff6b81,#20bf6b".split(","),pa:"#d980fa,#f7b731,#eb3b5a,#2bcbba,#778ca3,#20bf6b".split(",")};
 const sizes="20,24,28,32,36".split(",").map(Number);
-let curP="pg",curS="box",curD="horiz",saved=new Array();
+let curP="pg",curS="box",curD="horiz",curR=1,saved=new Array();
 const pick=a=>a.at(Math.floor(Math.random()*a.length));
 function bind(sel,fn){document.querySelectorAll(sel).forEach(b=>b.onclick=()=>{fn(b);document.querySelectorAll(sel).forEach(x=>x.classList.remove("on"));b.classList.add("on");if(document.getElementById("txt").value.trim())build()})}
-bind(".cb",b=>curP=b.dataset.p);bind(".sb",b=>curS=b.dataset.s);bind(".db",b=>curD=b.dataset.d);
+bind(".cb",b=>curP=b.dataset.p);bind(".sb",b=>curS=b.dataset.s);bind(".db",b=>curD=b.dataset.d);bind(".rb",b=>curR=Number(b.dataset.r));
 function pathStr(s){return s==="cloud"?"M25,74 L75,74 A17,17 0 0,0 78,40 A23,23 0 0,0 32,36 A17,17 0 0,0 25,74 Z":s==="heart"?"M50,88 C50,88 12,60 12,33 A19,19 0 0,1 50,26 A19,19 0 0,1 88,33 C88,60 50,88 50,88 Z":"M6,6 L94,6 L94,94 L6,94 Z"}
 function maskData(W,H,s){const c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");x.scale(W/100,H/100);x.fill(new Path2D(pathStr(s)));return x.getImageData(0,0,W,H).data}
 function fits(m,W,H,l,t,w,h){const x1=Math.floor(l),y1=Math.floor(t),x2=Math.ceil(l+w),y2=Math.ceil(t+h);if(x1<2||y1<2||x2>=W-2||y2>=H-2)return false;for(let y=y1;y<=y2;y+=3)for(let x=x1;x<=x2;x+=3)if(m[(y*W+x)*4+3]<128)return false;return true}
 function build(){
   const raw=document.getElementById("txt").value.toLowerCase().split(/\W+/);
-  const words=Array.from(new Set(raw)).filter(w=>w.length>0).sort((a,b)=>b.length-a.length);
-  if(!words.length)return alert("Type some words first!");
+  const uniq=Array.from(new Set(raw)).filter(w=>w.length>0);
+  if(!uniq.length)return alert("Type some words first!");
+  let words=new Array();for(let i=0;i<curR;i++)words=words.concat(uniq);
+  words.sort((a,b)=>b.length-a.length);
   const box=document.getElementById("cloud");
-  box.innerHTML=curS==="box"?"":'<svg id="bg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="'+pathStr(curS)+'" fill="#f3e8ff" stroke="#d8b4fe" stroke-width="1" stroke-dasharray="2,2"/></svg>';
+  box.innerHTML=curS==="box"?"":'<svg id="bg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="'+pathStr(curS)+'" fill="#e9d5ff" stroke="#c084fc" stroke-width="1" stroke-dasharray="2,2"/></svg>';
   box.style.display="block";
   const W=box.offsetWidth,H=box.offsetHeight,m=maskData(W,H,curS),placed=new Array();saved=new Array();
   const cx=W/2,cy=curS==="cloud"?H*.54:curS==="heart"?H*.46:H*.5;
@@ -73,9 +80,9 @@ function build(){
     const el=document.createElement("span");el.className="w";el.textContent=w;
     const col=pick(pals[curP]);el.style.color=col;
     const v=curD==="vert"||(curD==="mixed"&&Math.random()>.5);
-    let sz=pick(sizes);if(words.length>15)sz=Math.max(16,sz-4);
+    let sz=pick(sizes);if(words.length>15)sz=Math.max(15,sz-5);if(words.length>30)sz=Math.max(13,sz-8);
     box.appendChild(el);let ok=false;
-    while(!ok&&sz>=11){
+    while(!ok&&sz>=10){
       el.style.fontSize=sz+"px";
       const rw=el.offsetWidth||w.length*sz*.6,rh=el.offsetHeight||sz*1.1,bw=v?rh:rw,bh=v?rw:rh;
       let a=Math.random()*6.28,rad=0;
@@ -101,8 +108,8 @@ function build(){
 document.getElementById("sv").onclick=()=>{
   const box=document.getElementById("cloud"),W=box.offsetWidth,H=box.offsetHeight,c=document.createElement("canvas");
   c.width=W*2;c.height=H*2;const x=c.getContext("2d");x.scale(2,2);
-  x.fillStyle="#fff";x.fillRect(0,0,W,H);
-  if(curS!=="box"){x.save();x.scale(W/100,H/100);x.fillStyle="#f3e8ff";x.fill(new Path2D(pathStr(curS)));x.restore()}
+  x.fillStyle="#eceef1";x.fillRect(0,0,W,H);
+  if(curS!=="box"){x.save();x.scale(W/100,H/100);x.fillStyle="#e9d5ff";x.fill(new Path2D(pathStr(curS)));x.restore()}
   x.textAlign="center";x.textBaseline="middle";
   saved.forEach(i=>{x.save();x.translate(i.x,i.y);if(i.v)x.rotate(-Math.PI/2);x.font="bold "+i.s+"px 'Comic Sans MS','Chalkboard SE',sans-serif";x.fillStyle=i.c;x.fillText(i.t,0,0);x.restore()});
   const a=document.createElement("a");a.download="my-word-cloud.png";a.href=c.toDataURL("image/png");a.click();
