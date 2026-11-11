@@ -1,313 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>2nd Grade Word Cloud Maker</title>
-    <style>
-        body {
-            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Ubuntu', sans-serif;
-            background-color: #f0f8ff;
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-        .container {
-            max-width: 800px;
-            width: 100%;
-            background: white;
-            padding: 25px;
-            border-radius: 24px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-            text-align: center;
-            box-sizing: border-box;
-        }
-        h1 {
-            color: #8854d0;
-            font-size: 2.2rem;
-            margin-top: 0;
-            margin-bottom: 5px;
-        }
-        p {
-            color: #57606f;
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-        }
-        textarea {
-            width: 100%;
-            height: 120px;
-            padding: 15px;
-            border: 4px solid #a55eea;
-            border-radius: 16px;
-            font-size: 1.4rem;
-            font-family: inherit;
-            box-sizing: border-box;
-            resize: none;
-            margin-bottom: 15px;
-            -webkit-user-select: text;
-            user-select: text;
-        }
-        textarea:focus {
-            outline: none;
-            border-color: #1e90ff;
-        }
-        .controls-section {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            background: #f1f2f6;
-            padding: 15px;
-            border-radius: 16px;
-            margin-bottom: 15px;
-            gap: 15px;
-        }
-        .control-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .control-label {
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-            color: #2f3542;
-        }
-        .options {
-            display: flex;
-            gap: 10px;
-        }
-        .palette-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-            cursor: pointer;
-            transition: transform 0.1s ease;
-        }
-        .palette-btn.active {
-            border-color: #2f3542;
-            transform: scale(1.15);
-        }
-        .shape-btn {
-            background: white;
-            border: 2px solid #ced6e0;
-            padding: 8px 16px;
-            font-size: 1rem;
-            font-family: inherit;
-            font-weight: bold;
-            border-radius: 12px;
-            cursor: pointer;
-        }
-        .shape-btn.active {
-            background: #8854d0;
-            color: white;
-            border-color: #8854d0;
-        }
-        .action-btn {
-            background-color: #ffa502;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.6rem;
-            font-weight: bold;
-            font-family: inherit;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 6px #eccc68;
-            transition: all 0.1s ease;
-            margin-bottom: 20px;
-            width: 100%;
-            max-width: 350px;
-        }
-        .action-btn:active {
-            box-shadow: 0 2px #eccc68;
-            transform: translateY(4px);
-        }
-        #cloud-container {
-            width: 100%;
-            min-height: 450px;
-            border: 4px dashed #8854d0;
-            border-radius: 16px;
-            background-color: #fafafa;
-            position: relative;
-            overflow: hidden;
-            display: none;
-            box-sizing: border-box;
-        }
-        .word {
-            position: absolute;
-            font-weight: bold;
-            line-height: 1;
-            white-space: nowrap;
-            transform: translate(-50%, -50%);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>2nd Grade Word Cloud Maker</title>
+<style>
+  body { font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; background: #f0f8ff; margin: 0; padding: 15px; display: flex; justify-content: center; user-select: none; }
+  .box { max-width: 750px; width: 100%; background: #fff; padding: 20px; border-radius: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); text-align: center; }
+  h1 { color: #8854d0; margin: 0 0 5px; font-size: 2rem; }
+  p { color: #57606f; margin: 0 0 15px; font-size: 1.1rem; }
+  textarea { width: 100%; height: 110px; padding: 12px; border: 4px solid #a55eea; border-radius: 16px; font-size: 1.3rem; font-family: inherit; box-sizing: border-box; margin-bottom: 12px; }
+  .controls { display: flex; flex-wrap: wrap; justify-content: space-around; background: #f1f2f6; padding: 12px; border-radius: 16px; margin-bottom: 15px; gap: 10px; }
+  .label { font-weight: bold; display: block; margin-bottom: 6px; color: #2f3542; }
+  .c-btn { width: 38px; height: 38px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; }
+  .c-btn.active { border-color: #2f3542; transform: scale(1.15); }
+  .s-btn { background: #fff; border: 2px solid #ced6e0; padding: 8px 14px; font-size: 1rem; font-weight: bold; font-family: inherit; border-radius: 12px; cursor: pointer; }
+  .s-btn.active { background: #8854d0; color: #fff; border-color: #8854d0; }
+  .go-btn { background: #ffa502; color: #fff; border: none; padding: 14px 28px; font-size: 1.5rem; font-weight: bold; font-family: inherit; border-radius: 50px; cursor: pointer; box-shadow: 0 5px #eccc68; width: 100%; max-width: 320px; margin-bottom: 15px; }
+  .go-btn:active { transform: translateY(3px); box-shadow: 0 2px #eccc68; }
+  #cloud { width: 100%; height: 420px; border: 4px dashed #8854d0; border-radius: 16px; background: #fafafa; position: relative; overflow: hidden; display: none; }
+  .word { position: absolute; font-weight: bold; white-space: nowrap; transform: translate(-50%, -50%); }
+</style>
 </head>
 <body>
-
-<div class="container">
-    <h1>☁️ Class Word Cloud Maker ☁️</h1>
-    <p>Type your words, pick your favorite look, and click the big button!</p>
-    
-    <textarea id="word-input" placeholder="Type words here... Use spaces between your words!"></textarea>
-    
-    <div class="controls-section">
-        <div class="control-group">
-            <span class="control-label">🎨 Pick Colors</span>
-            <div class="options">
-                <button type="button" class="palette-btn active" id="p1" data-palette="purpleGray" style="background: linear-gradient(135deg, #a55eea, #718093, #6f11d1);" aria-label="Purple and Gray"></button>
-                <button type="button" class="palette-btn" id="p2" data-palette="bright" style="background: linear-gradient(135deg, #ff4757, #2ed573, #1e90ff);" aria-label="Bright Colors"></button>
-                <button type="button" class="palette-btn" id="p3" data-palette="pastel" style="background: linear-gradient(135deg, #ff9ff3, #feca57, #48dbfb);" aria-label="Pastel Colors"></button>
-            </div>
-        </div>
-        
-        <div class="control-group">
-            <span class="control-label">⭐ Pick Shape</span>
-            <div class="options">
-                <button type="button" class="shape-btn active" id="s1" data-shape="box">⬜ Box</button>
-                <button type="button" class="shape-btn" id="s2" data-shape="cloud">☁️ Cloud</button>
-                <button type="button" class="shape-btn" id="s3" data-shape="heart">❤️ Heart</button>
-            </div>
-        </div>
+<div class="box">
+  <h1>☁️ Class Word Cloud Maker ☁️</h1>
+  <p>Type your words, pick your look, and tap the big button!</p>
+  <textarea id="txt" placeholder="Type words here with spaces between them..."></textarea>
+  <div class="controls">
+    <div>
+      <span class="label">🎨 Pick Colors</span>
+      <button type="button" class="c-btn active" data-p="pg" style="background:linear-gradient(135deg,#a55eea,#718093,#2f3640)"></button>
+      <button type="button" class="c-btn" data-p="br" style="background:linear-gradient(135deg,#ff4757,#2ed573,#1e90ff)"></button>
+      <button type="button" class="c-btn" data-p="pa" style="background:linear-gradient(135deg,#ff9ff3,#feca57,#48dbfb)"></button>
     </div>
-    
-    <button type="button" class="action-btn" id="generate-btn">Make My Cloud! 🎉</button>
-    
-    <div id="cloud-container"></div>
+    <div>
+      <span class="label">⭐ Pick Shape</span>
+      <button type="button" class="s-btn active" data-s="box">⬜ Box</button>
+      <button type="button" class="s-btn" data-s="cloud">☁️ Cloud</button>
+      <button type="button" class="s-btn" data-s="heart">❤️ Heart</button>
+    </div>
+  </div>
+  <button type="button" class="go-btn" id="go">Make My Cloud! 🎉</button>
+  <div id="cloud"></div>
 </div>
-
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const palettes = {
-            purpleGray: ['#8854d0', '#718093', '#9c88ff', '#2f3640', '#6f11d1', '#a55eea', '#57606f'],
-            bright: ['#ff4757', '#2ed573', '#1e90ff', '#ffa502', '#34495e', '#ff6b81', '#20bf6b'],
-            pastel: ['#ff9ff3', '#feca57', '#ff6b81', '#48dbfb', '#ffb8b8', '#20bf6b']
-        };
-        
-        const fontSizes =;
-        let currentPalette = 'purpleGray';
-        let currentShape = 'box';
-
-        document.querySelectorAll('.palette-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                currentPalette = this.getAttribute('data-palette');
-                document.querySelectorAll('.palette-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-
-        document.querySelectorAll('.shape-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                currentShape = this.getAttribute('data-shape');
-                document.querySelectorAll('.shape-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-
-        document.getElementById('generate-btn').addEventListener('click', generateCloud);
-
-        function isInBoundary(x, y, shape) {
-            let nx = (x - 0.5) * 2;
-            let ny = (y - 0.5) * 2;
-            
-            if (shape === 'box') {
-                return Math.abs(nx) < 0.8 && Math.abs(ny) < 0.8;
-            }
-            if (shape === 'cloud') {
-                let inCenter = (nx*nx + ny*ny) < 0.4;
-                let inLeft = ((nx+0.35)*(nx+0.35) + ny*ny) < 0.3;
-                let inRight = ((nx-0.35)*(nx-0.35) + ny*ny) < 0.3;
-                return inCenter || inLeft || inRight;
-            }
-            if (shape === 'heart') {
-                ny = ny + 0.2;
-                return Math.pow(nx*nx + ny*ny - 0.8, 3) - nx*nx * Math.pow(ny, 3) < 0.0;
-            }
-            return true;
-        }
-
-        function isOverlapping(rect1, rect2) {
-            const padding = 6;
-            return !(rect1.right + padding < rect2.left || 
-                     rect1.left - padding > rect2.right || 
-                     rect1.bottom + padding < rect2.top || 
-                     rect1.top - padding > rect2.bottom);
-        }
-
-        function generateCloud() {
-            const input = document.getElementById('word-input').value;
-            const container = document.getElementById('cloud-container');
-            container.innerHTML = '';
-            
-            const cleanWords = input.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"'\n]/g, " ").toLowerCase().split(/\s+/);
-            const uniqueWords = [...new Set(cleanWords)].filter(word => word.trim().length > 0);
-            
-            if (uniqueWords.length === 0) {
-                alert("Please type some words first!");
-                return;
-            }
-
-            container.style.display = 'block';
-            const width = container.offsetWidth;
-            const height = container.offsetHeight;
-            
-            const placedRects = [];
-            const activeColors = palettes[currentPalette];
-
-            uniqueWords.forEach((word) => {
-                const span = document.createElement('span');
-                span.className = 'word';
-                span.textContent = word;
-                span.style.color = activeColors[Math.floor(Math.random() * activeColors.length)];
-                
-                const size = fontSizes[Math.floor(Math.random() * fontSizes.length)];
-                span.style.fontSize = size + 'px';
-                
-                container.appendChild(span);
-
-                const wordWidth = span.offsetWidth || (word.length * size * 0.65);
-                const wordHeight = span.offsetHeight || (size * 1.2);
-
-                let fits = false;
-                let attempts = 0;
-let finalX = width / 2;
-let finalY = height / 2;
-while (!fits && attempts < 300) {
-let leftPct = Math.random() * 0.8 + 0.1;
-let topPct = Math.random() * 0.8 + 0.1;
-if (isInBoundary(leftPct, topPct, currentShape)) {
-let testX = leftPct * width;
-let testY = topPct * height;
-const testRect = {
-left: testX - (wordWidth / 2),
-right: testX + (wordWidth / 2),
-top: testY - (wordHeight / 2),
-bottom: testY + (wordHeight / 2)
+const pals = {
+  pg: ['#8854d0','#718093','#9c88ff','#2f3640','#6f11d1','#a55eea','#57606f'],
+  br: ['#ff4757','#2ed573','#1e90ff','#ffa502','#34495e','#ff6b81','#20bf6b'],
+  pa: ['#ff9ff3','#feca57','#ff6b81','#48dbfb','#a29bfe','#20bf6b']
 };
-let overlap = false;
-for (let existingRect of placedRects) {
-if (isOverlapping(testRect, existingRect)) {
-overlap = true;
-break;
-}
-}
-if (!overlap) {
-fits = true;
-finalX = testX;
-finalY = testY;
-placedRects.push(testRect);
-}
-}
-attempts++;
-}
-span.style.left = finalX + 'px';
-span.style.top = finalY + 'px';
+const sizes =;
+let curP = 'pg', curS = 'box';
+
+document.querySelectorAll('.c-btn').forEach(b => b.onclick = () => {
+  curP = b.dataset.p;
+  document.querySelectorAll('.c-btn').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
 });
-}
+
+document.querySelectorAll('.s-btn').forEach(b => b.onclick = () => {
+  curS = b.dataset.s;
+  document.querySelectorAll('.s-btn').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
 });
+
+function inShape(x, y, s) {
+  let nx = (x - 0.5) * 2, ny = (y - 0.5) * 2;
+  if (s === 'box') return Math.abs(nx) < 0.8 && Math.abs(ny) < 0.8;
+  if (s === 'cloud') return (nx*nx+ny*ny)<0.4 || ((nx+0.35)**2+ny*ny)<0.3 || ((nx-0.35)**2+ny*ny)<0.3;
+  if (s === 'heart') { ny += 0.2; return Math.pow(nx*nx + ny*ny - 0.8, 3) - nx*nx * Math.pow(ny, 3) < 0; }
+  return true;
+}
+
+document.getElementById('go').onclick = () => {
+  const raw = document.getElementById('txt').value.replace(/[^a-zA-Z0-9\s]/g, ' ').toLowerCase().split(/\s+/);
+  const words = [...new Set(raw)].filter(w => w.length > 0);
+  if (!words.length) return alert('Type some words first!');
+  const box = document.getElementById('cloud');
+  box.innerHTML = '';
+  box.style.display = 'block';
+  const W = box.offsetWidth, H = box.offsetHeight, placed = [];
+
+  words.forEach(w => {
+    const el = document.createElement('span');
+    el.className = 'word';
+    el.textContent = w;
+    el.style.color = pals[curP][Math.floor(Math.random() * pals[curP].length)];
+    const sz = sizes[Math.floor(Math.random() * sizes.length)];
+    el.style.fontSize = sz + 'px';
+    box.appendChild(el);
+    const ww = el.offsetWidth || w.length * sz * 0.65, wh = el.offsetHeight || sz * 1.2;
+    let ok = false, tries = 0, fx = W/2, fy = H/2;
+    while (!ok && tries < 300) {
+      let lx = Math.random() * 0.8 + 0.1, ty = Math.random() * 0.8 + 0.1;
+      if (inShape(lx, ty, curS)) {
+        let tx = lx * W, ty2 = ty * H;
+        let r = { l: tx - ww/2, r: tx + ww/2, t: ty2 - wh/2, b: ty2 + wh/2 };
+        if (!placed.some(p => !(r.r+6 < p.l || r.l-6 > p.r || r.b+6 < p.t || r.t-6 > p.b))) {
+          ok = true; fx = tx; fy = ty2; placed.push(r);
+        }
+      }
+      tries++;
+    }
+    el.style.left = fx + 'px';
+    el.style.top = fy + 'px';
+  });
+};
+</script>
+</body>
 </html>
