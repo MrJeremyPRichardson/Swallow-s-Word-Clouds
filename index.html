@@ -46,49 +46,59 @@
 </div>
 <script>
 const pals = {
-  pg: ['#8854d0','#718093','#9c88ff','#2f3640','#6f11d1','#a55eea','#57606f'],
-  br: ['#ff4757','#2ed573','#1e90ff','#ffa502','#34495e','#ff6b81','#20bf6b'],
-  pa: ['#ff9ff3','#feca57','#ff6b81','#48dbfb','#a29bfe','#20bf6b']
+  pg: "#8854d0,#718093,#9c88ff,#2f3640,#6f11d1,#a55eea,#57606f".split(","),
+  br: "#ff4757,#2ed573,#1e90ff,#ffa502,#34495e,#ff6b81,#20bf6b".split(","),
+  pa: "#ff9ff3,#feca57,#ff6b81,#48dbfb,#a29bfe,#20bf6b".split(",")
 };
-const sizes =;
-let curP = 'pg', curS = 'box';
+const sizes = "24,28,32,36,40".split(",").map(Number);
+let curP = "pg", curS = "box";
 
-document.querySelectorAll('.c-btn').forEach(b => b.onclick = () => {
-  curP = b.dataset.p;
-  document.querySelectorAll('.c-btn').forEach(x => x.classList.remove('active'));
-  b.classList.add('active');
+function pick(arr) {
+  return arr.at(Math.floor(Math.random() * arr.length));
+}
+
+document.querySelectorAll(".c-btn").forEach(function(b) {
+  b.onclick = function() {
+    curP = b.dataset.p;
+    document.querySelectorAll(".c-btn").forEach(function(x) { x.classList.remove("active"); });
+    b.classList.add("active");
+  };
 });
 
-document.querySelectorAll('.s-btn').forEach(b => b.onclick = () => {
-  curS = b.dataset.s;
-  document.querySelectorAll('.s-btn').forEach(x => x.classList.remove('active'));
-  b.classList.add('active');
+document.querySelectorAll(".s-btn").forEach(function(b) {
+  b.onclick = function() {
+    curS = b.dataset.s;
+    document.querySelectorAll(".s-btn").forEach(function(x) { x.classList.remove("active"); });
+    b.classList.add("active");
+  };
 });
 
 function inShape(x, y, s) {
   let nx = (x - 0.5) * 2, ny = (y - 0.5) * 2;
-  if (s === 'box') return Math.abs(nx) < 0.8 && Math.abs(ny) < 0.8;
-  if (s === 'cloud') return (nx*nx+ny*ny)<0.4 || ((nx+0.35)**2+ny*ny)<0.3 || ((nx-0.35)**2+ny*ny)<0.3;
-  if (s === 'heart') { ny += 0.2; return Math.pow(nx*nx + ny*ny - 0.8, 3) - nx*nx * Math.pow(ny, 3) < 0; }
+  if (s === "box") return Math.abs(nx) < 0.8 && Math.abs(ny) < 0.8;
+  if (s === "cloud") return (nx*nx+ny*ny)<0.4 || ((nx+0.35)**2+ny*ny)<0.3 || ((nx-0.35)**2+ny*ny)<0.3;
+  if (s === "heart") { ny += 0.2; return Math.pow(nx*nx + ny*ny - 0.8, 3) - nx*nx * Math.pow(ny, 3) < 0; }
   return true;
 }
 
-document.getElementById('go').onclick = () => {
-  const raw = document.getElementById('txt').value.replace(/[^a-zA-Z0-9\s]/g, ' ').toLowerCase().split(/\s+/);
-  const words = [...new Set(raw)].filter(w => w.length > 0);
-  if (!words.length) return alert('Type some words first!');
-  const box = document.getElementById('cloud');
-  box.innerHTML = '';
-  box.style.display = 'block';
-  const W = box.offsetWidth, H = box.offsetHeight, placed = [];
+document.getElementById("go").onclick = function() {
+  const raw = document.getElementById("txt").value.toLowerCase().split(/\W+/);
+  const words = Array.from(new Set(raw)).filter(function(w) { return w.length > 0; });
+  if (!words.length) return alert("Type some words first!");
+  const box = document.getElementById("cloud");
+  box.innerHTML = "";
+  box.style.display = "block";
+  const W = box.offsetWidth, H = box.offsetHeight, placed = new Array();
 
-  words.forEach(w => {
-    const el = document.createElement('span');
-    el.className = 'word';
+  words.forEach(function(w) {
+    const el = document.createElement("span");
+    el.className = "word";
     el.textContent = w;
-    el.style.color = pals[curP][Math.floor(Math.random() * pals[curP].length)];
-    const sz = sizes[Math.floor(Math.random() * sizes.length)];
-    el.style.fontSize = sz + 'px';
+    el.style.color = pick(pals.pg);
+    if (curP === "br") el.style.color = pick(pals.br);
+    if (curP === "pa") el.style.color = pick(pals.pa);
+    const sz = pick(sizes);
+    el.style.fontSize = sz + "px";
     box.appendChild(el);
     const ww = el.offsetWidth || w.length * sz * 0.65, wh = el.offsetHeight || sz * 1.2;
     let ok = false, tries = 0, fx = W/2, fy = H/2;
@@ -97,14 +107,14 @@ document.getElementById('go').onclick = () => {
       if (inShape(lx, ty, curS)) {
         let tx = lx * W, ty2 = ty * H;
         let r = { l: tx - ww/2, r: tx + ww/2, t: ty2 - wh/2, b: ty2 + wh/2 };
-        if (!placed.some(p => !(r.r+6 < p.l || r.l-6 > p.r || r.b+6 < p.t || r.t-6 > p.b))) {
+        if (!placed.some(function(p) { return !(r.r+6 < p.l || r.l-6 > p.r || r.b+6 < p.t || r.t-6 > p.b); })) {
           ok = true; fx = tx; fy = ty2; placed.push(r);
         }
       }
       tries++;
     }
-    el.style.left = fx + 'px';
-    el.style.top = fy + 'px';
+    el.style.left = fx + "px";
+    el.style.top = fy + "px";
   });
 };
 </script>
