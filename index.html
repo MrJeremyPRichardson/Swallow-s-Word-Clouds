@@ -160,125 +160,153 @@
         <div class="control-group">
             <span class="control-label">🎨 Pick Colors</span>
             <div class="options">
-                <button type="button" class="palette-btn active" id="p1" style="background: linear-gradient(135deg, #a55eea, #718093, #6f11d1);" onclick="setPalette('purpleGray', 'p1')" aria-label="Purple and Gray"></button>
-                <button type="button" class="palette-btn" id="p2" style="background: linear-gradient(135deg, #ff4757, #2ed573, #1e90ff);" onclick="setPalette('bright', 'p2')" aria-label="Bright Colors"></button>
-                <button type="button" class="palette-btn" id="p3" style="background: linear-gradient(135deg, #ff9ff3, #feca57, #48dbfb);" onclick="setPalette('pastel', 'p3')" aria-label="Pastel Colors"></button>
+                <button type="button" class="palette-btn active" id="p1" data-palette="purpleGray" style="background: linear-gradient(135deg, #a55eea, #718093, #6f11d1);" aria-label="Purple and Gray"></button>
+                <button type="button" class="palette-btn" id="p2" data-palette="bright" style="background: linear-gradient(135deg, #ff4757, #2ed573, #1e90ff);" aria-label="Bright Colors"></button>
+                <button type="button" class="palette-btn" id="p3" data-palette="pastel" style="background: linear-gradient(135deg, #ff9ff3, #feca57, #48dbfb);" aria-label="Pastel Colors"></button>
             </div>
         </div>
         
         <div class="control-group">
             <span class="control-label">⭐ Pick Shape</span>
             <div class="options">
-                <button type="button" class="shape-btn active" id="s1" onclick="setShape('box', 's1')">⬜ Box</button>
-                <button type="button" class="shape-btn" id="s2" onclick="setShape('cloud', 's2')">☁️ Cloud</button>
-                <button type="button" class="shape-btn" id="s3" onclick="setShape('heart', 's3')">❤️ Heart</button>
+                <button type="button" class="shape-btn active" id="s1" data-shape="box">⬜ Box</button>
+                <button type="button" class="shape-btn" id="s2" data-shape="cloud">☁️ Cloud</button>
+                <button type="button" class="shape-btn" id="s3" data-shape="heart">❤️ Heart</button>
             </div>
         </div>
     </div>
     
-    <button type="button" class="action-btn" onclick="generateCloud()">Make My Cloud! 🎉</button>
+    <button type="button" class="action-btn" id="generate-btn">Make My Cloud! 🎉</button>
     
     <div id="cloud-container"></div>
 </div>
 
 <script>
-    const palettes = {
-        purpleGray: ['#8854d0', '#718093', '#9c88ff', '#2f3640', '#6f11d1', '#a55eea', '#57606f'],
-        bright: ['#ff4757', '#2ed573', '#1e90ff', '#ffa502', '#34495e', '#ff6b81', '#20bf6b'],
-        pastel: ['#ff9ff3', '#feca57', '#ff6b81', '#48dbfb', '#ffb8b8', '#20bf6b']
-    };
-    
-    const fontSizes =;
-    let currentPalette = 'purpleGray';
-    let currentShape = 'box';
-
-    function setPalette(type, id) {
-        currentPalette = type;
-        document.querySelectorAll('.palette-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-    }
-
-    function setShape(shape, id) {
-        currentShape = shape;
-        document.querySelectorAll('.shape-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-    }
-
-    function isInBoundary(x, y, shape) {
-        let nx = (x - 0.5) * 2;
-        let ny = (y - 0.5) * 2;
+    document.addEventListener("DOMContentLoaded", function() {
+        const palettes = {
+            purpleGray: ['#8854d0', '#718093', '#9c88ff', '#2f3640', '#6f11d1', '#a55eea', '#57606f'],
+            bright: ['#ff4757', '#2ed573', '#1e90ff', '#ffa502', '#34495e', '#ff6b81', '#20bf6b'],
+            pastel: ['#ff9ff3', '#feca57', '#ff6b81', '#48dbfb', '#ffb8b8', '#20bf6b']
+        };
         
-        if (shape === 'box') {
-            return Math.abs(nx) < 0.8 && Math.abs(ny) < 0.8;
-        }
-        if (shape === 'cloud') {
-            let inCenter = (nx*nx + ny*ny) < 0.4;
-            let inLeft = ((nx+0.35)*(nx+0.35) + ny*ny) < 0.3;
-            let inRight = ((nx-0.35)*(nx-0.35) + ny*ny) < 0.3;
-            return inCenter || inLeft || inRight;
-        }
-        if (shape === 'heart') {
-            ny = ny + 0.2;
-            return Math.pow(nx*nx + ny*ny - 0.8, 3) - nx*nx * Math.pow(ny, 3) < 0.0;
-        }
-        return true;
-    }
+        const fontSizes =;
+        let currentPalette = 'purpleGray';
+        let currentShape = 'box';
 
-    function isOverlapping(rect1, rect2) {
-        const padding = 6;
-        return !(rect1.right + padding < rect2.left || 
-                 rect1.left - padding > rect2.right || 
-                 rect1.bottom + padding < rect2.top || 
-                 rect1.top - padding > rect2.bottom);
-    }
+        document.querySelectorAll('.palette-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                currentPalette = this.getAttribute('data-palette');
+                document.querySelectorAll('.palette-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
 
-    function generateCloud() {
-        const input = document.getElementById('word-input').value;
-        const container = document.getElementById('cloud-container');
-        container.innerHTML = '';
-        
-        const cleanWords = input.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"'\n]/g, " ").toLowerCase().split(/\s+/);
-        const uniqueWords = [...new Set(cleanWords)].filter(word => word.trim().length > 0);
-        
-        if (uniqueWords.length === 0) {
-            alert("Please type some words first!");
-            return;
-        }
+        document.querySelectorAll('.shape-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                currentShape = this.getAttribute('data-shape');
+                document.querySelectorAll('.shape-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
 
-        container.style.display = 'block';
-        const width = container.offsetWidth;
-        const height = container.offsetHeight;
-        
-        const placedRects = [];
-        const activeColors = palettes[currentPalette];
+        document.getElementById('generate-btn').addEventListener('click', generateCloud);
 
-        uniqueWords.forEach((word) => {
-            const span = document.createElement('span');
-            span.className = 'word';
-            span.textContent = word;
-            span.style.color = activeColors[Math.floor(Math.random() * activeColors.length)];
+        function isInBoundary(x, y, shape) {
+            let nx = (x - 0.5) * 2;
+            let ny = (y - 0.5) * 2;
             
-            const size = fontSizes[Math.floor(Math.random() * fontSizes.length)];
-            span.style.fontSize = size + 'px';
+            if (shape === 'box') {
+                return Math.abs(nx) < 0.8 && Math.abs(ny) < 0.8;
+            }
+            if (shape === 'cloud') {
+                let inCenter = (nx*nx + ny*ny) < 0.4;
+                let inLeft = ((nx+0.35)*(nx+0.35) + ny*ny) < 0.3;
+                let inRight = ((nx-0.35)*(nx-0.35) + ny*ny) < 0.3;
+                return inCenter || inLeft || inRight;
+            }
+            if (shape === 'heart') {
+                ny = ny + 0.2;
+                return Math.pow(nx*nx + ny*ny - 0.8, 3) - nx*nx * Math.pow(ny, 3) < 0.0;
+            }
+            return true;
+        }
+
+        function isOverlapping(rect1, rect2) {
+            const padding = 6;
+            return !(rect1.right + padding < rect2.left || 
+                     rect1.left - padding > rect2.right || 
+                     rect1.bottom + padding < rect2.top || 
+                     rect1.top - padding > rect2.bottom);
+        }
+
+        function generateCloud() {
+            const input = document.getElementById('word-input').value;
+            const container = document.getElementById('cloud-container');
+            container.innerHTML = '';
             
-            container.appendChild(span);
+            const cleanWords = input.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"'\n]/g, " ").toLowerCase().split(/\s+/);
+            const uniqueWords = [...new Set(cleanWords)].filter(word => word.trim().length > 0);
+            
+            if (uniqueWords.length === 0) {
+                alert("Please type some words first!");
+                return;
+            }
 
-            const wordWidth = span.offsetWidth || (word.length * size * 0.65);
-            const wordHeight = span.offsetHeight || (size * 1.2);
+            container.style.display = 'block';
+            const width = container.offsetWidth;
+            const height = container.offsetHeight;
+            
+            const placedRects = [];
+            const activeColors = palettes[currentPalette];
 
-            let fits = false;
-            let attempts = 0;
-            let finalX = width / 2;
-            let finalY = height / 2;
-
-            while (!fits && attempts < 300) {
-                let leftPct = Math.random() * 0.8 + 0.1;
-                let topPct = Math.random() * 0.8 + 0.1;
+            uniqueWords.forEach((word) => {
+                const span = document.createElement('span');
+                span.className = 'word';
+                span.textContent = word;
+                span.style.color = activeColors[Math.floor(Math.random() * activeColors.length)];
                 
-                if (isInBoundary(leftPct, topPct, currentShape)) {
-                    let testX = leftPct * width;
-                    let testY = topPct * height;
-                    
-                    const testRect = {
-                        left: testX - (wordWidth / 2),
-                        right: testX + (wordWidth / 2),
+                const size = fontSizes[Math.floor(Math.random() * fontSizes.length)];
+                span.style.fontSize = size + 'px';
+                
+                container.appendChild(span);
+
+                const wordWidth = span.offsetWidth || (word.length * size * 0.65);
+                const wordHeight = span.offsetHeight || (size * 1.2);
+
+                let fits = false;
+                let attempts = 0;
+let finalX = width / 2;
+let finalY = height / 2;
+while (!fits && attempts < 300) {
+let leftPct = Math.random() * 0.8 + 0.1;
+let topPct = Math.random() * 0.8 + 0.1;
+if (isInBoundary(leftPct, topPct, currentShape)) {
+let testX = leftPct * width;
+let testY = topPct * height;
+const testRect = {
+left: testX - (wordWidth / 2),
+right: testX + (wordWidth / 2),
+top: testY - (wordHeight / 2),
+bottom: testY + (wordHeight / 2)
+};
+let overlap = false;
+for (let existingRect of placedRects) {
+if (isOverlapping(testRect, existingRect)) {
+overlap = true;
+break;
+}
+}
+if (!overlap) {
+fits = true;
+finalX = testX;
+finalY = testY;
+placedRects.push(testRect);
+}
+}
+attempts++;
+}
+span.style.left = finalX + 'px';
+span.style.top = finalY + 'px';
+});
+}
+});
