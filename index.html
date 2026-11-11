@@ -2,25 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>2nd Grade Word Cloud Maker</title>
 <style>
-  body { font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; background: #f0f8ff; margin: 0; padding: 15px; display: flex; justify-content: center; user-select: none; }
-  .box { max-width: 780px; width: 100%; background: #fff; padding: 20px; border-radius: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); text-align: center; }
-  h1 { color: #8854d0; margin: 0 0 5px; font-size: 2rem; }
-  p { color: #57606f; margin: 0 0 12px; font-size: 1.1rem; }
-  textarea { width: 100%; height: 105px; padding: 12px; border: 4px solid #a55eea; border-radius: 16px; font-size: 1.3rem; font-family: inherit; box-sizing: border-box; margin-bottom: 12px; }
-  .controls { display: flex; flex-wrap: wrap; justify-content: space-around; background: #f1f2f6; padding: 12px; border-radius: 16px; margin-bottom: 15px; gap: 12px; }
-  .label { font-weight: bold; display: block; margin-bottom: 6px; color: #2f3542; font-size: 0.95rem; }
-  .c-btn { width: 36px; height: 36px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; }
-  .c-btn.active { border-color: #2f3542; transform: scale(1.15); }
-  .s-btn, .d-btn { background: #fff; border: 2px solid #ced6e0; padding: 7px 12px; font-size: 0.95rem; font-weight: bold; font-family: inherit; border-radius: 12px; cursor: pointer; }
-  .s-btn.active, .d-btn.active { background: #8854d0; color: #fff; border-color: #8854d0; }
-  .go-btn { background: #ffa502; color: #fff; border: none; padding: 14px 28px; font-size: 1.5rem; font-weight: bold; font-family: inherit; border-radius: 50px; cursor: pointer; box-shadow: 0 5px #eccc68; width: 100%; max-width: 320px; margin-bottom: 15px; }
-  .go-btn:active { transform: translateY(3px); box-shadow: 0 2px #eccc68; }
-  #cloud { width: 100%; height: 460px; border: 4px dashed #8854d0; border-radius: 16px; background: #fafafa; position: relative; overflow: hidden; display: none; }
-  #shape-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
-  .word { position: absolute; font-weight: bold; white-space: nowrap; line-height: 1; z-index: 2; }
+body{font-family:'Comic Sans MS','Chalkboard SE',sans-serif;background:#f0f8ff;margin:0;padding:12px;display:flex;justify-content:center;user-select:none}
+.box{max-width:760px;width:100%;background:#fff;padding:18px;border-radius:24px;box-shadow:0 8px 20px rgba(0,0,0,.1);text-align:center}
+h1{color:#8854d0;margin:0 0 4px;font-size:1.9rem}
+p{color:#57606f;margin:0 0 10px;font-size:1.05rem}
+textarea{width:100%;height:100px;padding:12px;border:4px solid #a55eea;border-radius:16px;font-size:1.3rem;font-family:inherit;box-sizing:border-box;margin-bottom:10px}
+.ctrls{display:flex;flex-wrap:wrap;justify-content:space-around;background:#f1f2f6;padding:10px;border-radius:16px;margin-bottom:12px;gap:10px}
+.lbl{font-weight:bold;display:block;margin-bottom:5px;color:#2f3542;font-size:.9rem}
+.cb{width:34px;height:34px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.2);cursor:pointer}
+.cb.on{border-color:#2f3542;transform:scale(1.15)}
+.sb,.db{background:#fff;border:2px solid #ced6e0;padding:6px 11px;font-size:.9rem;font-weight:bold;font-family:inherit;border-radius:12px;cursor:pointer}
+.sb.on,.db.on{background:#8854d0;color:#fff;border-color:#8854d0}
+.go{background:#ffa502;color:#fff;border:none;padding:12px 24px;font-size:1.45rem;font-weight:bold;font-family:inherit;border-radius:50px;cursor:pointer;box-shadow:0 5px #eccc68;width:100%;max-width:300px;margin-bottom:14px}
+.go:active,.sv:active{transform:translateY(3px)}
+#cloud{width:100%;height:440px;border:4px dashed #8854d0;border-radius:16px;background:#fafafa;position:relative;overflow:hidden;display:none}
+#bg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.w{position:absolute;font-weight:bold;white-space:nowrap;line-height:1;z-index:2}
+.sv{background:#2ed573;color:#fff;border:none;padding:12px 24px;font-size:1.3rem;font-weight:bold;font-family:inherit;border-radius:50px;cursor:pointer;box-shadow:0 5px #20bf6b;width:100%;max-width:260px;margin-top:14px;display:none}
 </style>
 </head>
 <body>
@@ -28,163 +29,85 @@
   <h1>☁️ Class Word Cloud Maker ☁️</h1>
   <p>Type your words, pick your look, and tap the big button!</p>
   <textarea id="txt" placeholder="Type words here with spaces between them..."></textarea>
-  <div class="controls">
-    <div>
-      <span class="label">🎨 Colors</span>
-      <button type="button" class="c-btn active" data-p="pg" style="background:linear-gradient(135deg,#a55eea,#718093,#2f3640)"></button>
-      <button type="button" class="c-btn" data-p="br" style="background:linear-gradient(135deg,#ff4757,#2ed573,#1e90ff)"></button>
-      <button type="button" class="c-btn" data-p="pa" style="background:linear-gradient(135deg,#ff9ff3,#feca57,#48dbfb)"></button>
+  <div class="ctrls">
+    <div><span class="lbl">🎨 Colors</span>
+      <button type="button" class="cb on" data-p="pg" style="background:linear-gradient(135deg,#a55eea,#718093,#2f3640)"></button>
+      <button type="button" class="cb" data-p="br" style="background:linear-gradient(135deg,#ff4757,#2ed573,#1e90ff)"></button>
+      <button type="button" class="cb" data-p="pa" style="background:linear-gradient(135deg,#ff9ff3,#feca57,#48dbfb)"></button>
     </div>
-    <div>
-      <span class="label">⭐ Shape</span>
-      <button type="button" class="s-btn active" data-s="box">⬜ Box</button>
-      <button type="button" class="s-btn" data-s="cloud">☁️ Cloud</button>
-      <button type="button" class="s-btn" data-s="heart">❤️ Heart</button>
+    <div><span class="lbl">⭐ Shape</span>
+      <button type="button" class="sb on" data-s="box">⬜ Box</button>
+      <button type="button" class="sb" data-s="cloud">☁️ Cloud</button>
+      <button type="button" class="sb" data-s="heart">❤️ Heart</button>
     </div>
-    <div>
-      <span class="label">🧭 Direction</span>
-      <button type="button" class="d-btn active" data-d="horiz">➡️ Across</button>
-      <button type="button" class="d-btn" data-d="vert">⬇️ Down</button>
-      <button type="button" class="d-btn" data-d="mixed">🔀 Both</button>
+    <div><span class="lbl">🧭 Direction</span>
+      <button type="button" class="db on" data-d="horiz">➡️ Across</button>
+      <button type="button" class="db" data-d="vert">⬇️ Down</button>
+      <button type="button" class="db" data-d="mixed">🔀 Both</button>
     </div>
   </div>
-  <button type="button" class="go-btn" id="go">Make My Cloud! 🎉</button>
+  <button type="button" class="go" id="go">Make My Cloud! 🎉</button>
   <div id="cloud"></div>
+  <button type="button" class="sv" id="sv">💾 Save Picture</button>
 </div>
 <script>
-const pals = {
-  pg: "#8854d0,#718093,#9c88ff,#2f3640,#6f11d1,#a55eea,#57606f".split(","),
-  br: "#ff4757,#2ed573,#1e90ff,#ffa502,#34495e,#ff6b81,#20bf6b".split(","),
-  pa: "#ff9ff3,#feca57,#ff6b81,#48dbfb,#a29bfe,#20bf6b".split(",")
-};
-const sizes = "20,24,28,32,36".split(",").map(Number);
-let curP = "pg", curS = "box", curD = "horiz";
-
-function pick(arr) {
-  return arr.at(Math.floor(Math.random() * arr.length));
-}
-
-function setupBtns(selector, onSelect) {
-  document.querySelectorAll(selector).forEach(function(b) {
-    b.onclick = function() {
-      onSelect(b);
-      document.querySelectorAll(selector).forEach(function(x) { x.classList.remove("active"); });
-      b.classList.add("active");
-      if (document.getElementById("txt").value.trim()) buildCloud();
-    };
-  });
-}
-
-setupBtns(".c-btn", function(b) { curP = b.dataset.p; });
-setupBtns(".s-btn", function(b) { curS = b.dataset.s; });
-setupBtns(".d-btn", function(b) { curD = b.dataset.d; });
-
-function getShapePath(s) {
-  if (s === "cloud") return "M25,74 L75,74 A17,17 0 0,0 78,40 A23,23 0 0,0 32,36 A17,17 0 0,0 25,74 Z";
-  if (s === "heart") return "M50,88 C50,88 12,60 12,33 A19,19 0 0,1 50,26 A19,19 0 0,1 88,33 C88,60 50,88 50,88 Z";
-  return "M6,6 L94,6 L94,94 L6,94 Z";
-}
-
-function getGuideSVG(s) {
-  if (s === "box") return "";
-  return '<svg id="shape-bg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="' + getShapePath(s) + '" fill="#f3e8ff" stroke="#d8b4fe" stroke-width="1" stroke-dasharray="2,2"/></svg>';
-}
-
-function createMask(W, H, s) {
-  const cv = document.createElement("canvas");
-  cv.width = W;
-  cv.height = H;
-  const ctx = cv.getContext("2d");
-  ctx.save();
-  ctx.scale(W / 100, H / 100);
-  const path = new Path2D(getShapePath(s));
-  ctx.fillStyle = "#000";
-  ctx.fill(path);
-  ctx.restore();
-  return ctx.getImageData(0, 0, W, H).data;
-}
-
-function boxFitsMask(mask, W, H, l, t, w, h) {
-  const x1 = Math.floor(l), y1 = Math.floor(t);
-  const x2 = Math.ceil(l + w), y2 = Math.ceil(t + h);
-  if (x1 < 2 || y1 < 2 || x2 >= W - 2 || y2 >= H - 2) return false;
-  for (let y = y1; y <= y2; y += 3) {
-    for (let x = x1; x <= x2; x += 3) {
-      if (mask[(y * W + x) * 4 + 3] < 128) return false;
-    }
-  }
-  return true;
-}
-
-function buildCloud() {
-  const raw = document.getElementById("txt").value.toLowerCase().split(/\W+/);
-  const words = Array.from(new Set(raw)).filter(function(w) { return w.length > 0; });
-  if (!words.length) return alert("Type some words first!");
-  words.sort(function(a, b) { return b.length - a.length; });
-
-  const box = document.getElementById("cloud");
-  box.innerHTML = getGuideSVG(curS);
-  box.style.display = "block";
-  const W = box.offsetWidth, H = box.offsetHeight;
-  const mask = createMask(W, H, curS);
-  const placed = new Array();
-
-  const cx = W / 2;
-  const cy = curS === "cloud" ? H * 0.54 : (curS === "heart" ? H * 0.46 : H * 0.5);
-
-  words.forEach(function(w) {
-    const el = document.createElement("span");
-    el.className = "word";
-    el.textContent = w;
-    el.style.color = pick(pals.pg);
-    if (curP === "br") el.style.color = pick(pals.br);
-    if (curP === "pa") el.style.color = pick(pals.pa);
-
-    let isVert = false;
-    if (curD === "vert") isVert = true;
-    if (curD === "mixed") isVert = Math.random() > 0.5;
-
-    let sz = pick(sizes);
-    if (words.length > 15) sz = Math.max(16, sz - 4);
-    box.appendChild(el);
-
-    let placedOk = false;
-    while (!placedOk && sz >= 11) {
-      el.style.fontSize = sz + "px";
-      const rawW = el.offsetWidth || w.length * sz * 0.6;
-      const rawH = el.offsetHeight || sz * 1.1;
-      const bw = isVert ? rawH : rawW;
-      const bh = isVert ? rawW : rawH;
-
-      let angle = Math.random() * 6.28;
-      let radius = 0;
-      while (radius < Math.max(W, H) * 0.65) {
-        let tx = cx + radius * Math.cos(angle) - bw / 2;
-        let ty = cy + radius * Math.sin(angle) * 0.85 - bh / 2;
-        if (boxFitsMask(mask, W, H, tx, ty, bw, bh)) {
-          let r = { l: tx, r: tx + bw, t: ty, b: ty + bh };
-          let hit = placed.some(function(p) {
-            return !(r.r + 4 < p.l || r.l - 4 > p.r || r.b + 4 < p.t || r.t - 4 > p.b);
-          });
-          if (!hit) {
-            placedOk = true;
-            placed.push(r);
-            el.style.left = (tx + bw / 2) + "px";
-            el.style.top = (ty + bh / 2) + "px";
-            el.style.transform = isVert ? "translate(-50%, -50%) rotate(-90deg)" : "translate(-50%, -50%)";
-            break;
+const pals={pg:"#8854d0,#718093,#9c88ff,#2f3640,#6f11d1,#a55eea,#57606f".split(","),br:"#ff4757,#2ed573,#1e90ff,#ffa502,#34495e,#ff6b81,#20bf6b".split(","),pa:"#ff9ff3,#feca57,#ff6b81,#48dbfb,#a29bfe,#20bf6b".split(",")};
+const sizes="20,24,28,32,36".split(",").map(Number);
+let curP="pg",curS="box",curD="horiz",saved=new Array();
+const pick=a=>a.at(Math.floor(Math.random()*a.length));
+function bind(sel,fn){document.querySelectorAll(sel).forEach(b=>b.onclick=()=>{fn(b);document.querySelectorAll(sel).forEach(x=>x.classList.remove("on"));b.classList.add("on");if(document.getElementById("txt").value.trim())build()})}
+bind(".cb",b=>curP=b.dataset.p);bind(".sb",b=>curS=b.dataset.s);bind(".db",b=>curD=b.dataset.d);
+function pathStr(s){return s==="cloud"?"M25,74 L75,74 A17,17 0 0,0 78,40 A23,23 0 0,0 32,36 A17,17 0 0,0 25,74 Z":s==="heart"?"M50,88 C50,88 12,60 12,33 A19,19 0 0,1 50,26 A19,19 0 0,1 88,33 C88,60 50,88 50,88 Z":"M6,6 L94,6 L94,94 L6,94 Z"}
+function maskData(W,H,s){const c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");x.scale(W/100,H/100);x.fill(new Path2D(pathStr(s)));return x.getImageData(0,0,W,H).data}
+function fits(m,W,H,l,t,w,h){const x1=Math.floor(l),y1=Math.floor(t),x2=Math.ceil(l+w),y2=Math.ceil(t+h);if(x1<2||y1<2||x2>=W-2||y2>=H-2)return false;for(let y=y1;y<=y2;y+=3)for(let x=x1;x<=x2;x+=3)if(m[(y*W+x)*4+3]<128)return false;return true}
+function build(){
+  const raw=document.getElementById("txt").value.toLowerCase().split(/\W+/);
+  const words=Array.from(new Set(raw)).filter(w=>w.length>0).sort((a,b)=>b.length-a.length);
+  if(!words.length)return alert("Type some words first!");
+  const box=document.getElementById("cloud");
+  box.innerHTML=curS==="box"?"":'<svg id="bg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="'+pathStr(curS)+'" fill="#f3e8ff" stroke="#d8b4fe" stroke-width="1" stroke-dasharray="2,2"/></svg>';
+  box.style.display="block";
+  const W=box.offsetWidth,H=box.offsetHeight,m=maskData(W,H,curS),placed=new Array();saved=new Array();
+  const cx=W/2,cy=curS==="cloud"?H*.54:curS==="heart"?H*.46:H*.5;
+  words.forEach(w=>{
+    const el=document.createElement("span");el.className="w";el.textContent=w;
+    const col=pick(pals[curP]);el.style.color=col;
+    const v=curD==="vert"||(curD==="mixed"&&Math.random()>.5);
+    let sz=pick(sizes);if(words.length>15)sz=Math.max(16,sz-4);
+    box.appendChild(el);let ok=false;
+    while(!ok&&sz>=11){
+      el.style.fontSize=sz+"px";
+      const rw=el.offsetWidth||w.length*sz*.6,rh=el.offsetHeight||sz*1.1,bw=v?rh:rw,bh=v?rw:rh;
+      let a=Math.random()*6.28,rad=0;
+      while(rad<Math.max(W,H)*.65){
+        let tx=cx+rad*Math.cos(a)-bw/2,ty=cy+rad*Math.sin(a)*.85-bh/2;
+        if(fits(m,W,H,tx,ty,bw,bh)){
+          let r={l:tx,r:tx+bw,t:ty,b:ty+bh};
+          if(!placed.some(p=>!(r.r+4<p.l||r.l-4>p.r||r.b+4<p.t||r.t-4>p.b))){
+            ok=true;placed.push(r);let px=tx+bw/2,py=ty+bh/2;
+            el.style.left=px+"px";el.style.top=py+"px";
+            el.style.transform=v?"translate(-50%,-50%) rotate(-90deg)":"translate(-50%,-50%)";
+            saved.push({t:w,x:px,y:py,s:sz,c:col,v:v});break;
           }
         }
-        angle += 0.35;
-        radius += 0.45;
+        a+=.35;rad+=.45;
       }
-      if (!placedOk) sz -= 2;
+      if(!ok)sz-=2;
     }
-    if (!placedOk) el.remove();
+    if(!ok)el.remove();
   });
+  document.getElementById("sv").style.display="inline-block";
 }
-
-document.getElementById("go").onclick = buildCloud;
+document.getElementById("sv").onclick=()=>{
+  const box=document.getElementById("cloud"),W=box.offsetWidth,H=box.offsetHeight,c=document.createElement("canvas");
+  c.width=W*2;c.height=H*2;const x=c.getContext("2d");x.scale(2,2);
+  x.fillStyle="#fff";x.fillRect(0,0,W,H);
+  if(curS!=="box"){x.save();x.scale(W/100,H/100);x.fillStyle="#f3e8ff";x.fill(new Path2D(pathStr(curS)));x.restore()}
+  x.textAlign="center";x.textBaseline="middle";
+  saved.forEach(i=>{x.save();x.translate(i.x,i.y);if(i.v)x.rotate(-Math.PI/2);x.font="bold "+i.s+"px 'Comic Sans MS','Chalkboard SE',sans-serif";x.fillStyle=i.c;x.fillText(i.t,0,0);x.restore()});
+  const a=document.createElement("a");a.download="my-word-cloud.png";a.href=c.toDataURL("image/png");a.click();
+};
+document.getElementById("go").onclick=build;
 </script>
 </body>
 </html>
