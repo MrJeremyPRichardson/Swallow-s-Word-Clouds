@@ -160,23 +160,23 @@
         <div class="control-group">
             <span class="control-label">🎨 Pick Colors</span>
             <div class="options">
-                <div class="palette-btn active" id="p1" style="background: linear-gradient(135deg, #a55eea, #718093, #6f11d1);" onclick="setPalette('purpleGray', 'p1')"></div>
-                <div class="palette-btn" id="p2" style="background: linear-gradient(135deg, #ff4757, #2ed573, #1e90ff);" onclick="setPalette('bright', 'p2')"></div>
-                <div class="palette-btn" id="p3" style="background: linear-gradient(135deg, #ff9ff3, #feca57, #48dbfb);" onclick="setPalette('pastel', 'p3')"></div>
+                <button type="button" class="palette-btn active" id="p1" style="background: linear-gradient(135deg, #a55eea, #718093, #6f11d1);" onclick="setPalette('purpleGray', 'p1')" aria-label="Purple and Gray"></button>
+                <button type="button" class="palette-btn" id="p2" style="background: linear-gradient(135deg, #ff4757, #2ed573, #1e90ff);" onclick="setPalette('bright', 'p2')" aria-label="Bright Colors"></button>
+                <button type="button" class="palette-btn" id="p3" style="background: linear-gradient(135deg, #ff9ff3, #feca57, #48dbfb);" onclick="setPalette('pastel', 'p3')" aria-label="Pastel Colors"></button>
             </div>
         </div>
         
         <div class="control-group">
             <span class="control-label">⭐ Pick Shape</span>
             <div class="options">
-                <button class="shape-btn active" id="s1" onclick="setShape('box', 's1')">⬜ Box</button>
-                <button class="shape-btn" id="s2" onclick="setShape('cloud', 's2')">☁️ Cloud</button>
-                <button class="shape-btn" id="s3" onclick="setShape('heart', 's3')">❤️ Heart</button>
+                <button type="button" class="shape-btn active" id="s1" onclick="setShape('box', 's1')">⬜ Box</button>
+                <button type="button" class="shape-btn" id="s2" onclick="setShape('cloud', 's2')">☁️ Cloud</button>
+                <button type="button" class="shape-btn" id="s3" onclick="setShape('heart', 's3')">❤️ Heart</button>
             </div>
         </div>
     </div>
     
-    <button class="action-btn" onclick="generateCloud()">Make My Cloud! 🎉</button>
+    <button type="button" class="action-btn" onclick="generateCloud()">Make My Cloud! 🎉</button>
     
     <div id="cloud-container"></div>
 </div>
@@ -282,8 +282,3 @@
                     const testRect = {
                         left: testX - (wordWidth / 2),
                         right: testX + (wordWidth / 2),
-                        top: testY - (wordHeight / 2),
-                        bottom: testY + (wordHeight / 2)
-                    };
-
-                    let overlap = false;
